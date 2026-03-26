@@ -47,13 +47,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - run: docker run --rm -v $(pwd):/src hysnsec/trufflehog filesystem /src --json > trufflehog-output.json
+      - run: docker run --rm -v $(pwd):/src hysnsec/bandit -r /src -f json > bandit-output.json
         continue-on-error: true             # allow the build to fail, similar to "allow_failure: true" in GitLab
 
       - uses: actions/upload-artifact@v4
         with:
-          name: TruffleHog
-          path: trufflehog-output.json
+          name: bandit
+          path: bandit-output.json
         if: always()                        # what is this for?
 
   integration:
