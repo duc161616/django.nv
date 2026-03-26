@@ -56,7 +56,7 @@ workflows:
       - test:
           requires:
             - build
-      - secret_scanning:
+      - sast:
           requires:
             - test
       - integration:
