@@ -23,21 +23,7 @@ jobs:
           pip install -r requirements.txt
           python manage.py check
 
-  semgrep:
-    runs-on: ubuntu-22.04
-    needs: test
-    name: semgrep
-    steps:
-      - run: docker run --rm -v "${PWD}:/src" returntocorp/semgrep semgrep --config auto --output semgrep-output.json --json
-      - uses: actions/checkout@v4
-      - uses: actions/upload-artifacts@v4
-        with:
-          name: semgrep
-          path: semgrep-output.json
-        continue-on-error: true
-        if: always()
-    
-    
+      
 
   test:
     runs-on: ubuntu-22.04
@@ -56,6 +42,20 @@ jobs:
           source env/bin/activate
           pip install -r requirements.txt
           python manage.py test taskManager
+  
+  semgrep:
+    runs-on: ubuntu-22.04
+    needs: test
+    name: semgrep/ci
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker run --rm -v "${PWD}:/src" returntocorp/semgrep semgrep --config auto --output semgrep-output.json --json
+      - uses: actions/upload-artifacts@v4
+        with:
+          name: semgrep
+          path: semgrep-output.json
+        continue-on-error: true
+        if: always()
 
   integration:
     runs-on: ubuntu-22.04
